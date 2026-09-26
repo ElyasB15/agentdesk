@@ -36,3 +36,25 @@ puisse le régler sans moi.
   au démarrage, probablement désactivé lors d'une installation de VirtualBox.
 - **Correctif 2** : `bcdedit /set hypervisorlaunchtype auto`, puis redémarrage.
 - **Vérification 2** : `bcdedit` affiche `Auto`, Ubuntu
+
+
+---
+
+## 2026-09-23 — PostgreSQL (Docker) : port 5432 indisponible
+
+- **Symptôme** : `docker compose up -d` échoue avec `ports are not available:
+  exposing port TCP 127.0.0.1:5432`. Le conteneur reste à l'état `Created`
+  (visible seulement avec `docker compose ps -a`).
+- **Diagnostic** : `netstat -ano | findstr :5432` (PowerShell) montre un processus
+  en écoute sur `0.0.0.0:5432`, PID 6052. `tasklist /FI "PID eq 6052"` l'identifie :
+  `postgres.exe`, un PostgreSQL installé sur Windows et lancé comme service.
+- **Options** : arrêter le service Windows, ou changer le port côté hôte.
+- **Correctif retenu** : port hôte changé en 5433 (`127.0.0.1:5433:5432`).
+  Choix le moins risqué : le PostgreSQL Windows peut servir à d'autres projets
+  et n'est pas dans le périmètre de l'intervention.
+- **Vérification** : `docker compose ps` affiche `healthy` et
+  `127.0.0.1:5433->5432/tcp`, `select version();` répond.
+- **Conséquence** : depuis la machine hôte, la base est sur `localhost:5433` ;
+  depuis un autre conteneur du compose, sur `db:5432`.
+- **Observation** : le PostgreSQL Windows écoute sur `0.0.0.0` (exposé au réseau
+  local). À restreindre s'il est conservé.
