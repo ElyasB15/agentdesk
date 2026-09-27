@@ -1,0 +1,26 @@
+{
+  "model": "granite4.1:3b",
+  "stream": false,
+  "messages": [
+    { "role": "system", "content": "Tu tries les messages du service client. Appelle toujours l'outil classify_message." },
+    { "role": "user", "content": "Bonjour, ma commande 1234 n'est toujours pas arrivée et je veux un remboursement." }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "classify_message",
+        "description": "Classe un message client par catégorie et priorité",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "categorie": { "type": "string", "enum": ["livraison", "facturation", "technique", "autre"] },
+            "priorite": { "type": "string", "enum": ["basse", "normale", "haute"] },
+            "resume": { "type": "string", "description": "Résumé du message en une phrase" }
+          },
+          "required": ["categorie", "priorite", "resume"]
+        }
+      }
+    }
+  ]
+}
