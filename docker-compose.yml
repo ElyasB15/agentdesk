@@ -16,5 +16,23 @@ services:
       timeout: 3s
       retries: 10
 
+  ollama:
+    image: ollama/ollama:0.34.4
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      OLLAMA_NO_CLOUD: "true"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
 volumes:
   db-data:
+  ollama-data:
