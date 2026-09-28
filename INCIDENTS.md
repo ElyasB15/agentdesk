@@ -58,3 +58,23 @@ puisse le régler sans moi.
   depuis un autre conteneur du compose, sur `db:5432`.
 - **Observation** : le PostgreSQL Windows écoute sur `0.0.0.0` (exposé au réseau
   local). À restreindre s'il est conservé.
+
+  ---
+
+## 2026-09-28 — Docker : `.dockerignore` ignoré, secret copié dans le cache de build
+
+- **Symptôme** : le build envoie 365 Mo de contexte ; la ligne `load .dockerignore`
+  indique 2 octets (fichier absent).
+- **Cause** : `.dockerignore` placé à la racine du repo, alors que le contexte de build
+  est `./app`. Docker ne lit le `.dockerignore` qu'à la racine du contexte.
+- **Impact** : `node_modules` et `app/.env` copiés dans l'étape de construction.
+  L'image finale n'est pas touchée (l'étape d'exécution ne copie que `dist`, `prisma`
+  et la config), mais le mot de passe était présent dans le cache de build local.
+- **Correctif** : `.dockerignore` déplacé dans `app/`, image reconstruite,
+  cache purgé avec `docker builder prune -f`.
+- **Vérification** : contexte de build de quelques Ko ; `docker run --rm
+  agentdesk-app:local ls -la` ne montre aucun `.env`.
+- **Leçon** : relire les premières lignes d'un build (taille du contexte,
+  `.dockerignore` chargé). Un contexte anormalement gros est un signal d'alarme.
+- **Défense en profondeur** : le build multi-étapes a empêché le secret d'atteindre
+  l'image finale, malgré l'erreur de configuration.
