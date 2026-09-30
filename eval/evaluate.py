@@ -107,6 +107,7 @@ def build_report(meta, cases, all_results, summaries):
     lines = [
         f"# Évaluation des modèles — {meta['date']}",
         "",
+        f"- Configuration : {meta['label'] or 'non précisée'}",
         f"- API : `{meta['api']}`",
         f"- Ollama : `{meta['ollama_version']}`",
         f"- Jeu de tests : {len(cases)} cas (`eval/dataset.json`, règles dans `eval/RULES.md`)",
@@ -153,6 +154,7 @@ def main():
     parser.add_argument("--ollama", default="http://localhost:11434")
     parser.add_argument("--models", nargs="+", default=DEFAULT_MODELS)
     parser.add_argument("--dataset", type=Path, default=EVAL_DIR / "dataset.json")
+    parser.add_argument("--label", default="", help="Configuration évaluée, ex. « prompt v2 »")
     args = parser.parse_args()
 
     cases = load_dataset(args.dataset)
@@ -185,6 +187,7 @@ def main():
         "ollama_version": ollama_version,
         "machine": f"{platform.system()} {platform.machine()}, Python {platform.python_version()}",
         "models": args.models,
+        "label": args.label,
     }
     report = build_report(meta, cases, all_results, summaries)
 
