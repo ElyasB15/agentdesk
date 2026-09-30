@@ -180,6 +180,44 @@ npm run typecheck                # aucune sortie = aucune erreur de types
 - Après un changement de branche ou un `git pull`, **redémarrer** le serveur et vérifier
   `/health`. Un serveur oublié dans un autre terminal sert l'ancien code.
 ---
+
+### 3.6 Proposer une modification (branche, PR et CI)
+
+**Objectif** : faire arriver un changement sur `main`. La branche `main` est protégée :
+aucun push direct, fusion uniquement par PR, CI verte exigée.
+
+```bash
+git checkout main
+git pull
+git checkout -b <type>/<description>     # ex. feat/..., fix/..., docs/..., ci/...
+# modifier, puis vérifier en local :
+cd app && npm run typecheck && cd ..
+git status                               # vérifier la branche et les fichiers
+git add <fichiers>
+git commit -m "<type>: <description>"
+git push -u origin <type>/<description>
+```
+
+Puis ouvrir une PR vers `main` sur GitHub, avec une description qui indique **ce qui change**
+et **comment c'est vérifié**.
+
+**Résultat attendu** : les deux vérifications `App (types et compilation)` et
+`Docker (compose et image)` passent au vert ; le bouton de fusion se débloque.
+
+**Si la CI est rouge** :
+1. Sur la PR : **Details** du job en échec, puis ouvrir l'étape marquée en rouge.
+2. Reproduire en local la même commande (`npm run typecheck`, `npm run build`,
+   `docker compose config --quiet`, `docker build -t agentdesk-app:local ./app`).
+3. Corriger, commiter, pousser : la CI se relance automatiquement.
+
+**Annuler un commit déjà poussé** : `git revert --no-edit <commit>` (crée un commit inverse,
+sans réécrire l'historique). Ne jamais utiliser `--amend` ni `reset` sur un commit déjà poussé.
+
+**En cas de conflit avec `main`** : dans sa branche, `git merge main`, résoudre, vérifier en local,
+pousser. Pour `package-lock.json`, ne pas résoudre à la main : relancer `npm install`.
+Si deux branches ont chacune créé une migration, relancer `npm run db:migrate` après la fusion
+pour vérifier que la suite de migrations s'applique proprement.
+
  
 ## 4. Déployer une nouvelle version
  
@@ -359,6 +397,7 @@ tourne environ 10 fois plus lentement sans rien signaler d'autre : voir la secti
 | `npx` propose d'installer un paquet | Mauvais dossier courant | `pwd` | Répondre `n`, se placer dans `app/`, utiliser les scripts `npm run ...` |
 | Le build Docker envoie des centaines de Mo | `.dockerignore` absent ou mal placé | Début du build : `load .dockerignore` (quelques octets = absent) | Placer `.dockerignore` dans `app/`, reconstruire, `docker builder prune -f` |
 | `migrate` en `Exited (1)`, `app` absent | Échec de migration | `docker compose logs migrate` | Section 5.3 |
+| La PR ne peut pas être fusionnée | CI rouge, ou branche en retard sur `main` | Section *Checks* de la PR | Section 3.6 ; si la branche est en retard : bouton *Update branch* ou `git merge main` |
  
 Chaque incident réel est consigné dans `INCIDENTS.md` (symptôme, cause, correctif, vérification).
  

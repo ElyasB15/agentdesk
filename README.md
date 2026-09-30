@@ -1,4 +1,5 @@
 # AgentDesk
+![CI](https://github.com/ElyasB15/agentdesk/actions/workflows/ci.yml/badge.svg)
 
 Mini-service de classification de messages clients par **modèle de langage local**, conteneurisé
 et documenté pour l'exploitation.
@@ -46,6 +47,10 @@ qu'Ollama est prêt.
 - **Exploitation** : Docker (image multi-étapes, utilisateur non root), Docker Compose,
   healthchecks
 - **Environnement** : WSL2 (Ubuntu), Docker Desktop, GPU NVIDIA GTX 1660 Super (6 Go)
+- **Rien n'arrive sur `main` sans vérification.** Chaque PR passe par une CI GitHub Actions
+  (vérification des types, compilation, validation du compose, construction de l'image), et la
+  branche `main` est protégée : fusion uniquement par PR, CI verte exigée, aucun push direct ni
+  réécriture d'historique. Testé avec une erreur volontaire et une tentative de push direct.
 
 ---
 
@@ -146,6 +151,7 @@ Même message, trois modèles, sur GTX 1660 Super (6 Go de VRAM) :
 
 ```
 agentdesk/
+├── .github/workflows/ci.yml    # intégration continue
 ├── app/                        # API
 │   ├── src/                    # server.ts (routes), db.ts (Prisma), ollama.ts (client du modèle)
 │   ├── prisma/                 # schéma et migrations versionnées
@@ -177,9 +183,10 @@ agentdesk/
 - [x] Classification par modèle local via appel d'outil
 - [x] Conteneurisation complète et chaîne de démarrage
 - [x] Runbook d'exploitation
-- [ ] Intégration continue GitHub Actions (vérification des types, build de l'image, scan de sécurité, Dependabot)
+- [x] Intégration continue GitHub Actions (vérification des types, build de l'image, scan de sécurité, Dependabot) et protection de `main`
 - [ ] Script d'évaluation des modèles sur un jeu de tests annoté
 - [ ] Seconde migration (`tokensPerSec`) pour faire évoluer un schéma existant
 - [ ] Observabilité : métriques, Prometheus, Grafana, alertes
 - [ ] Inventaire automatisé (conteneurs, versions, certificats)
 - [ ] Configuration des outils IA de développement (CLAUDE.md, serveur MCP, hook)
+- [ ] Scan de sécurité de l'image et Dependabot
