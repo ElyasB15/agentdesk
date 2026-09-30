@@ -101,9 +101,7 @@ app.post<{ Params: ClassifyParams; Body: ClassifyBody }>(
 
 
 
-// const port = Number(process.env.PORT ?? 3000);
-// TEST ERREUR VOLONTAIRE POUR TESTER LES GITHUB ACTIONS
-const port: number = process.env.PORT ?? 3000;
+const port = Number(process.env.PORT ?? 3000);
 
 const shutdown = async (signal: string) => {
   app.log.info({ signal }, "arrêt en cours");
