@@ -1,0 +1,411 @@
+{
+  "meta": {
+    "date": "2026-09-30 19:49 UTC",
+    "api": "http://localhost:3000",
+    "ollama_version": "0.34.4",
+    "machine": "Linux x86_64, Python 3.14.4",
+    "models": [
+      "granite4.1:3b",
+      "qwen3:4b",
+      "llama3.2:3b"
+    ],
+    "label": "prompt v2 : règles métier dans le prompt système"
+  },
+  "summaries": {
+    "granite4.1:3b": {
+      "cases": 12,
+      "valid_rate": 0.9166666666666666,
+      "category_accuracy": 0.8333333333333334,
+      "priority_accuracy": 0.5833333333333334,
+      "latency_median_ms": 869.0,
+      "latency_p95_ms": 1100,
+      "errors": 0
+    },
+    "qwen3:4b": {
+      "cases": 12,
+      "valid_rate": 0.9166666666666666,
+      "category_accuracy": 0.9166666666666666,
+      "priority_accuracy": 0.6666666666666666,
+      "latency_median_ms": 14392.0,
+      "latency_p95_ms": 21022,
+      "errors": 0
+    },
+    "llama3.2:3b": {
+      "cases": 12,
+      "valid_rate": 1.0,
+      "category_accuracy": 0.6666666666666666,
+      "priority_accuracy": 0.4166666666666667,
+      "latency_median_ms": 531.0,
+      "latency_p95_ms": 846,
+      "errors": 0
+    }
+  },
+  "results": {
+    "granite4.1:3b": [
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 857,
+        "id": "livraison-retard",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 1100,
+        "id": "double-prelevement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "haute",
+        "latency_ms": 881,
+        "id": "app-crash",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 716,
+        "id": "copie-facture",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 905,
+        "id": "colis-abime",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "normale",
+        "latency_ms": 1037,
+        "id": "mot-de-passe",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": false,
+        "category": null,
+        "priority": null,
+        "latency_ms": 970,
+        "id": "horaires",
+        "category_ok": false,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "haute",
+        "latency_ms": 853,
+        "id": "ambigu-remboursement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 776,
+        "id": "panne-paiement",
+        "category_ok": false,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 904,
+        "id": "anglais",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 663,
+        "id": "compliment",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "haute",
+        "latency_ms": 686,
+        "id": "injection",
+        "category_ok": true,
+        "priority_ok": false
+      }
+    ],
+    "qwen3:4b": [
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 13955,
+        "id": "livraison-retard",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 6920,
+        "id": "double-prelevement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "normale",
+        "latency_ms": 14490,
+        "id": "app-crash",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": false,
+        "category": null,
+        "priority": null,
+        "latency_ms": 15400,
+        "id": "copie-facture",
+        "category_ok": false,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 15321,
+        "id": "colis-abime",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "normale",
+        "latency_ms": 14294,
+        "id": "mot-de-passe",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 5709,
+        "id": "horaires",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "haute",
+        "latency_ms": 16432,
+        "id": "ambigu-remboursement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "haute",
+        "latency_ms": 13904,
+        "id": "panne-paiement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 21022,
+        "id": "anglais",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 12906,
+        "id": "compliment",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 20587,
+        "id": "injection",
+        "category_ok": true,
+        "priority_ok": true
+      }
+    ],
+    "llama3.2:3b": [
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "haute",
+        "latency_ms": 440,
+        "id": "livraison-retard",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 588,
+        "id": "double-prelevement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "normale",
+        "latency_ms": 631,
+        "id": "app-crash",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 477,
+        "id": "copie-facture",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 744,
+        "id": "colis-abime",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 846,
+        "id": "mot-de-passe",
+        "category_ok": false,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 493,
+        "id": "horaires",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "normale",
+        "latency_ms": 557,
+        "id": "ambigu-remboursement",
+        "category_ok": false,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 502,
+        "id": "panne-paiement",
+        "category_ok": false,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 600,
+        "id": "anglais",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 467,
+        "id": "compliment",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 505,
+        "id": "injection",
+        "category_ok": false,
+        "priority_ok": false
+      }
+    ]
+  }
+}
