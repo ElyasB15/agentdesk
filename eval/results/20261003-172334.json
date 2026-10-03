@@ -1,0 +1,411 @@
+{
+  "meta": {
+    "date": "2026-10-03 17:23 UTC",
+    "api": "http://localhost:3000",
+    "ollama_version": "0.34.4",
+    "machine": "Linux x86_64, Python 3.14.4",
+    "models": [
+      "granite4.1:3b",
+      "qwen3:4b",
+      "llama3.2:3b"
+    ],
+    "label": "prompt v2 : deuxième exécution"
+  },
+  "summaries": {
+    "granite4.1:3b": {
+      "cases": 12,
+      "valid_rate": 1.0,
+      "category_accuracy": 0.9166666666666666,
+      "priority_accuracy": 0.6666666666666666,
+      "latency_median_ms": 898.0,
+      "latency_p95_ms": 1347,
+      "errors": 0
+    },
+    "qwen3:4b": {
+      "cases": 12,
+      "valid_rate": 0.9166666666666666,
+      "category_accuracy": 0.9166666666666666,
+      "priority_accuracy": 0.75,
+      "latency_median_ms": 16211,
+      "latency_p95_ms": 37660,
+      "errors": 1
+    },
+    "llama3.2:3b": {
+      "cases": 12,
+      "valid_rate": 1.0,
+      "category_accuracy": 0.75,
+      "priority_accuracy": 0.5,
+      "latency_median_ms": 622.5,
+      "latency_p95_ms": 1182,
+      "errors": 0
+    }
+  },
+  "results": {
+    "granite4.1:3b": [
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 887,
+        "id": "livraison-retard",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 1224,
+        "id": "double-prelevement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "haute",
+        "latency_ms": 900,
+        "id": "app-crash",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 761,
+        "id": "copie-facture",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 1347,
+        "id": "colis-abime",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "normale",
+        "latency_ms": 1146,
+        "id": "mot-de-passe",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 977,
+        "id": "horaires",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "haute",
+        "latency_ms": 896,
+        "id": "ambigu-remboursement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 799,
+        "id": "panne-paiement",
+        "category_ok": false,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 1245,
+        "id": "anglais",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 694,
+        "id": "compliment",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "haute",
+        "latency_ms": 711,
+        "id": "injection",
+        "category_ok": true,
+        "priority_ok": false
+      }
+    ],
+    "qwen3:4b": [
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 11790,
+        "id": "livraison-retard",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 13377,
+        "id": "double-prelevement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "normale",
+        "latency_ms": 17571,
+        "id": "app-crash",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "basse",
+        "latency_ms": 6034,
+        "id": "copie-facture",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 16211,
+        "id": "colis-abime",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "normale",
+        "latency_ms": 23853,
+        "id": "mot-de-passe",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 8390,
+        "id": "horaires",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "haute",
+        "latency_ms": 22800,
+        "id": "ambigu-remboursement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "haute",
+        "latency_ms": 21601,
+        "id": "panne-paiement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": "HTTP 502",
+        "valid": false,
+        "category": null,
+        "priority": null,
+        "latency_ms": null,
+        "id": "anglais",
+        "category_ok": false,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 12930,
+        "id": "compliment",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 37660,
+        "id": "injection",
+        "category_ok": true,
+        "priority_ok": true
+      }
+    ],
+    "llama3.2:3b": [
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 494,
+        "id": "livraison-retard",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 1045,
+        "id": "double-prelevement",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "technique",
+        "priority": "normale",
+        "latency_ms": 442,
+        "id": "app-crash",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 522,
+        "id": "copie-facture",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 770,
+        "id": "colis-abime",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "normale",
+        "latency_ms": 868,
+        "id": "mot-de-passe",
+        "category_ok": false,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 626,
+        "id": "horaires",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "livraison",
+        "priority": "normale",
+        "latency_ms": 636,
+        "id": "ambigu-remboursement",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 619,
+        "id": "panne-paiement",
+        "category_ok": false,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "normale",
+        "latency_ms": 1182,
+        "id": "anglais",
+        "category_ok": true,
+        "priority_ok": false
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "autre",
+        "priority": "basse",
+        "latency_ms": 473,
+        "id": "compliment",
+        "category_ok": true,
+        "priority_ok": true
+      },
+      {
+        "error": null,
+        "valid": true,
+        "category": "facturation",
+        "priority": "haute",
+        "latency_ms": 504,
+        "id": "injection",
+        "category_ok": false,
+        "priority_ok": false
+      }
+    ]
+  }
+}
