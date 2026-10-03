@@ -1,8 +1,27 @@
 import Fastify from "fastify";
 import { prisma } from "./db.js";
 import { classify, type ClassifyResult } from "./ollama.js";
+import {
+  classificationDuration,
+  classificationErrorsTotal,
+  classificationsTotal,
+  httpRequestDuration,
+  initModelSeries,
+  registry,
+} from "./metrics.js";
 
 const app = Fastify({ logger: true });
+
+app.addHook("onResponse", async (request, reply) => {
+  httpRequestDuration.observe(
+    {
+      method: request.method,
+      route: request.routeOptions.url ?? "non_trouvee",
+      status_code: String(reply.statusCode),
+    },
+    reply.elapsedTime / 1000,
+  );
+});
 
 app.get("/health", async (_request, reply) => {
   try {
@@ -12,6 +31,12 @@ app.get("/health", async (_request, reply) => {
     app.log.error({ err }, "health check : base de données injoignable");
     return reply.code(503).send({ status: "error", database: "unreachable" });
   }
+});
+
+
+app.get("/metrics", async (_request, reply) => {
+  reply.header("Content-Type", registry.contentType);
+  return registry.metrics();
 });
 
 type CreateMessageBody = { content: string };
@@ -48,6 +73,13 @@ app.get("/messages", async () => {
 
 const DEFAULT_MODEL = process.env.DEFAULT_MODEL ?? "granite4.1:3b";
 
+const KNOWN_MODELS = (process.env.KNOWN_MODELS ?? DEFAULT_MODEL)
+  .split(",")
+  .map((m) => m.trim())
+  .filter((m) => m.length > 0);
+
+initModelSeries(KNOWN_MODELS);
+
 type ClassifyParams = { id: string };
 type ClassifyBody = { model?: string };
 
@@ -75,13 +107,24 @@ app.post<{ Params: ClassifyParams; Body: ClassifyBody }>(
 
     const model = request.body.model ?? DEFAULT_MODEL;
 
+    if (!KNOWN_MODELS.includes(model)) {
+      return reply.code(400).send({ error: `Modèle non autorisé : ${model}` });
+    }
+
     let result: ClassifyResult;
     try {
       result = await classify(message.content, model);
     } catch (err) {
       request.log.error({ err, model }, "échec de l'appel à Ollama");
+      classificationErrorsTotal.inc({ model });
       return reply.code(502).send({ error: "Le service de modèles n'a pas répondu correctement" });
     }
+
+    classificationDuration.observe({ model }, result.latencyMs / 1000);
+    classificationsTotal.inc({
+      model,
+      tool_call_valid: String(result.classification !== null),
+    });
 
     const run = await prisma.classificationRun.create({
       data: {
