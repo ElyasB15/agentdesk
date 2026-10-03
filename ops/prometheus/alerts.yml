@@ -1,0 +1,23 @@
+groups:
+  - name: agentdesk
+    rules:
+      - alert: AgentDeskApiDown
+        expr: up{job="agentdesk-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "L'API AgentDesk ne répond plus"
+          description: "Prometheus n'arrive plus à lire /metrics depuis plus d'une minute."
+
+      - alert: AgentDeskInvalidToolCallsHigh
+        expr: |
+          sum by (model) (rate(agentdesk_classifications_total{tool_call_valid="false"}[10m]))
+            / sum by (model) (rate(agentdesk_classifications_total[10m]))
+            > 0.2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Plus de 20 % d'appels d'outils invalides pour {{ $labels.model }}"
+          description: "Le modèle ne respecte plus le protocole d'outils : vérifier une mise à jour récente du modèle ou du prompt."

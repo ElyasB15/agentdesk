@@ -78,3 +78,23 @@ puisse le régler sans moi.
   `.dockerignore` chargé). Un contexte anormalement gros est un signal d'alarme.
 - **Défense en profondeur** : le build multi-étapes a empêché le secret d'atteindre
   l'image finale, malgré l'erreur de configuration.
+
+  ---
+
+## 2026-10-03 — Grafana : échec du provisionnement après l'ajout d'un `uid`
+
+- **Symptôme** : Grafana redémarre en boucle ; logs :
+  `Datasource provisioning error: data source not found`, puis échec en cascade des
+  modules qui dépendent du provisionnement.
+- **Cause** : au premier démarrage, la source Prometheus a été créée sans `uid` (identifiant
+  aléatoire, stocké dans le volume `grafana-data`). L'ajout de `uid: prometheus` dans le
+  fichier de provisionnement a changé l'identité attendue : Grafana cherche une source avec
+  cet identifiant, ne la trouve pas, et refuse de continuer.
+- **Options** : supprimer le volume `grafana-data` (repartir de zéro), ou migrer la source.
+- **Correctif retenu** : section `deleteDatasources` temporaire (suppression de l'ancienne
+  source par son nom, puis recréation avec le bon `uid`). Solution la moins destructrice :
+  le reste de l'état de Grafana est conservé. Section retirée après application.
+- **Vérification** : `docker compose logs grafana --since 1m | grep -i -E "error|provision"`
+  ne renvoie rien ; Grafana stable ; tableau de bord AgentDesk chargé.
+- **Leçon** : changer l'identité d'une ressource déjà créée demande une étape de transition,
+  comme une migration de base de données. Donner un `uid` stable dès la création évite le problème.

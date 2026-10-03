@@ -6,6 +6,7 @@ import {
   classificationErrorsTotal,
   classificationsTotal,
   httpRequestDuration,
+  initModelSeries,
   registry,
 } from "./metrics.js";
 
@@ -72,6 +73,13 @@ app.get("/messages", async () => {
 
 const DEFAULT_MODEL = process.env.DEFAULT_MODEL ?? "granite4.1:3b";
 
+const KNOWN_MODELS = (process.env.KNOWN_MODELS ?? DEFAULT_MODEL)
+  .split(",")
+  .map((m) => m.trim())
+  .filter((m) => m.length > 0);
+
+initModelSeries(KNOWN_MODELS);
+
 type ClassifyParams = { id: string };
 type ClassifyBody = { model?: string };
 
@@ -98,6 +106,10 @@ app.post<{ Params: ClassifyParams; Body: ClassifyBody }>(
     }
 
     const model = request.body.model ?? DEFAULT_MODEL;
+
+    if (!KNOWN_MODELS.includes(model)) {
+      return reply.code(400).send({ error: `Modèle non autorisé : ${model}` });
+    }
 
     let result: ClassifyResult;
     try {

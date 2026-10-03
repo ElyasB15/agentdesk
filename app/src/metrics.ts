@@ -33,3 +33,12 @@ export const classificationErrorsTotal = new Counter({
   labelNames: ["model"] as const,
   registers: [registry],
 });
+
+export function initModelSeries(models: readonly string[]): void {
+  for (const model of models) {
+    classificationsTotal.inc({ model, tool_call_valid: "true" }, 0);
+    classificationsTotal.inc({ model, tool_call_valid: "false" }, 0);
+    classificationErrorsTotal.inc({ model }, 0);
+    classificationDuration.zero({ model });
+  }
+}
