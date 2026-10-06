@@ -12,14 +12,47 @@ datasource db {
   provider = "postgresql"
 }
 
+enum CategoryStatus {
+  ACTIVE
+  DISABLED
+  ARCHIVED
+}
+
+enum ClassificationSource {
+  MODEL
+  HUMAN
+}
+
+
+model Category {
+  id              Int                 @id @default(autoincrement())
+  label           String
+  normalizedLabel String              @unique @map("normalized_label")
+  description     String
+  status          CategoryStatus      @default(ACTIVE)
+  position        Int                 @default(0)
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
+  messages        Message[]
+  runs            ClassificationRun[]
+
+  @@map("categories")
+}
 
 model Message {
   id         String              @id @default(uuid())
   content    String
   receivedAt DateTime            @default(now()) @map("received_at")
   runs       ClassificationRun[]
+  categoryId           Int?                  @map("category_id")
+  category             Category?             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  priority             String?
+  classificationSource ClassificationSource? @map("classification_source")
+  classifiedAt         DateTime?             @map("classified_at")
 
   @@map("messages")
+  @@index([categoryId])
+  @@index([priority])
 }
 
 model ClassificationRun {
@@ -33,7 +66,10 @@ model ClassificationRun {
   toolCallValid Boolean  @map("tool_call_valid")
   latencyMs     Int      @map("latency_ms")
   createdAt     DateTime @default(now()) @map("created_at")
+  categoryId Int?      @map("category_id")
+  categoryRef Category? @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 
+  @@index([categoryId])
   @@index([messageId])
   @@map("classification_runs")
 }
