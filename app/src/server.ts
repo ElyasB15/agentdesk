@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import { Prisma } from "../generated/prisma/client.js";
 import { prisma } from "./db.js";
 import { classify, type ClassifyResult } from "./ollama.js";
 import {
@@ -142,7 +143,33 @@ app.post<{ Params: ClassifyParams; Body: ClassifyBody }>(
   },
 );
 
+type DeleteParams = { id: string };
 
+app.delete<{ Params: DeleteParams }>(
+  "/messages/:id",
+  {
+    schema: {
+      params: {
+        type: "object",
+        required: ["id"],
+        properties: { id: { type: "string", format: "uuid" } },
+      },
+    },
+  },
+  async (request, reply) => {
+    const { id } = request.params;
+    try {
+      await prisma.message.delete({ where: { id } });
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+        return reply.code(404).send({ error: "Message introuvable" });
+      }
+      throw err;
+    }
+    request.log.info({ messageId: id }, "message supprimé");
+    return reply.code(204).send();
+  },
+);
 
 const port = Number(process.env.PORT ?? 3000);
 

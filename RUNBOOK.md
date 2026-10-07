@@ -2,7 +2,7 @@
 
 > Procédures d'exploitation de la pile AgentDesk.
 > Public : toute personne qui doit démarrer, vérifier, déployer, surveiller ou dépanner le projet.
-> Dernière mise à jour : 2026-10-03
+> Dernière mise à jour : 2026-10-07
 >
 > Chaque procédure suit le même format : **objectif**, **commandes**, **résultat attendu**, **si ça ne va pas**.
 > Les procédures marquées ⚠️ *à tester* n'ont pas encore été exécutées de bout en bout sur ce projet.
@@ -48,6 +48,7 @@ d'écriture dans le fichier) :
 | `POST` | `/messages` | Enregistre un message (`{"content": "..."}`) |
 | `GET` | `/messages` | 50 derniers messages avec leurs classifications |
 | `POST` | `/messages/:id/classify` | Classe un message existant (`{}` ou `{"model": "..."}`) |
+| `DELETE` | `/messages/:id` | Supprime un message et ses classifications (204). **Irréversible** : les classifications, donc les données d'évaluation, sont supprimées avec lui |
 | `GET` | `/metrics` | Métriques au format Prometheus |
 
 **Autres documents** : `INCIDENTS.md` (historique des incidents), `SECURITY.md` (risques et
@@ -565,6 +566,7 @@ pas encore écoulé) → **Firing** (déclenchée). Le délai évite d'alerter p
 | Classification très lente, sans erreur | Ollama sur CPU au lieu du GPU, ou chargement à froid | `docker compose logs ollama \| grep -i "inference compute"` ; `ollama ps` | Si CPU : vérifier `nvidia-smi` et le bloc `deploy.resources` du compose. Sinon, relancer : la seconde classification doit être rapide |
 | `/messages/:id/classify` répond **502** | Ollama injoignable ou modèle non téléchargé | `docker compose logs app` (ligne `échec de l'appel à Ollama`) ; `ollama list` | Télécharger le modèle ou relancer `ollama` |
 | `/messages/:id/classify` répond **400** « Modèle non autorisé » | Modèle absent de `KNOWN_MODELS` | Variable `KNOWN_MODELS` du service `app` | Section 6.1 |
+| `DELETE /messages/:id` répond **400** alors que l'id est valide | Requête envoyée avec `Content-Type: application/json` et un corps vide : Fastify la rejette (`FST_ERR_CTP_EMPTY_JSON_BODY`) avant la validation de l'id | `docker compose logs app` ; relancer `curl -v` pour voir les en-têtes envoyés | Ne pas envoyer l'en-tête `Content-Type` sur un DELETE : `curl -X DELETE localhost:3000/messages/$ID` |
 | `/health` répond **503** | La base ne répond pas | `docker compose ps -a db` ; `docker compose logs db` | Relancer `db`. L'app se reconnecte seule |
 | Routes en 404 alors que le code les contient | Ancienne version du serveur encore en marche | `/health` : format de réponse attendu? `ss -ltnp \| grep 3000` | Arrêter le processus en trop, relancer |
 | Le code modifié n'a aucun effet dans le conteneur | Fichier non sauvegardé, ou image non reconstruite | `grep` dans le fichier source, puis `docker compose exec app grep -c "<texte>" dist/src/<fichier>.js` | Sauvegarder, puis `docker compose up -d --build app` |
