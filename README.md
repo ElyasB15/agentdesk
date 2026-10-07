@@ -111,6 +111,7 @@ Réponse :
 | `POST` | `/messages` | Enregistre un message |
 | `GET` | `/messages` | 50 derniers messages et leurs classifications |
 | `POST` | `/messages/:id/classify` | Classe un message existant avec le modèle choisi |
+| `DELETE` | `/messages/:id` | Supprime un message et ses classifications (204). **Irréversible** : les classifications, donc les données d'évaluation, sont supprimées avec lui |
 | `GET` | `/metrics` | Métriques au format Prometheus |
 
 Codes d'erreur : **400** requête invalide ou modèle non autorisé, **404** message inexistant,
