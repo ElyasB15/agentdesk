@@ -122,3 +122,14 @@ Couplages non évidents à respecter :
 - Documentation mise à jour si nécessaire.
 - Compte rendu final : ce qui a été fait, ce qui a été vérifié et comment, ce qui reste ou ce qui
   a été supposé.
+
+## Usine de développement
+
+Pour toute tâche de développement, enchaîner les sous-agents de `.claude/agents/` :
+1. **analyste** → présenter la spécification à l'humain et **attendre sa validation**.
+2. **developpeur** avec la spécification validée.
+3. **reviseur** sur le diff obtenu. Verdict « À CORRIGER » : renvoyer au développeur
+   (au plus deux allers-retours, puis s'arrêter et exposer la situation à l'humain).
+4. **testeur** avec les critères d'acceptation.
+5. Présenter à l'humain les rapports de revue et de tests, puis **attendre sa validation**
+   avant tout commit.
