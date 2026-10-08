@@ -2,7 +2,7 @@
 
 > Procédures d'exploitation de la pile AgentDesk.
 > Public : toute personne qui doit démarrer, vérifier, déployer, surveiller ou dépanner le projet.
-> Dernière mise à jour : 2026-10-07
+> Dernière mise à jour : 2026-10-08
 >
 > Chaque procédure suit le même format : **objectif**, **commandes**, **résultat attendu**, **si ça ne va pas**.
 > Les procédures marquées ⚠️ *à tester* n'ont pas encore été exécutées de bout en bout sur ce projet.
@@ -48,6 +48,7 @@ d'écriture dans le fichier) :
 | `POST` | `/messages` | Enregistre un message (`{"content": "..."}`) |
 | `GET` | `/messages` | 50 derniers messages avec leurs classifications |
 | `POST` | `/messages/:id/classify` | Classe un message existant (`{}` ou `{"model": "..."}`) |
+| `GET` | `/stats` | Statistiques par modèle depuis la base : nombre de classifications, appels d'outils valides, taux, latence médiane (200 ou 503) |
 | `DELETE` | `/messages/:id` | Supprime un message et ses classifications (204). **Irréversible** : les classifications, donc les données d'évaluation, sont supprimées avec lui |
 | `GET` | `/metrics` | Métriques au format Prometheus |
 
@@ -479,6 +480,9 @@ latence médiane et p95, détail par cas.
   exemples donnés au modèle ne doivent jamais être des cas du jeu de tests.
 - Commiter chaque rapport avec la configuration qui l'a produit.
 - Avec 12 cas, un cas pèse 8 points : seuls les grands écarts sont significatifs.
+- `GET /stats` agrège **tous les runs depuis le début** (chauffes comprises). Les échecs 502 n'y
+  figurent pas (jamais enregistrés en base) et la suppression d'un message retire ses runs. Ces
+  chiffres ne sont donc **pas comparables** à un rapport d'évaluation (`eval/results/`).
 
 **Si ça ne va pas** :
 
@@ -589,6 +593,7 @@ Seuls les agents **reviseur** et **testeur** ont accès à cet outil.
 | `/messages/:id/classify` répond **400** « Modèle non autorisé » | Modèle absent de `KNOWN_MODELS` | Variable `KNOWN_MODELS` du service `app` | Section 6.1 |
 | `DELETE /messages/:id` répond **400** alors que l'id est valide | Requête envoyée avec `Content-Type: application/json` et un corps vide : Fastify la rejette (`FST_ERR_CTP_EMPTY_JSON_BODY`) avant la validation de l'id | `docker compose logs app` ; relancer `curl -v` pour voir les en-têtes envoyés | Ne pas envoyer l'en-tête `Content-Type` sur un DELETE : `curl -X DELETE localhost:3000/messages/$ID` |
 | `/health` répond **503** | La base ne répond pas | `docker compose ps -a db` ; `docker compose logs db` | Relancer `db`. L'app se reconnecte seule |
+| `/stats` répond **503** `Base de données injoignable` | La base ne répond pas ou la requête SQL a échoué | `docker compose ps -a db` ; `docker compose logs app` (ligne `stats : base de données injoignable`) | Relancer `db`. L'app se reconnecte seule |
 | Routes en 404 alors que le code les contient | Ancienne version du serveur encore en marche | `/health` : format de réponse attendu? `ss -ltnp \| grep 3000` | Arrêter le processus en trop, relancer |
 | Le code modifié n'a aucun effet dans le conteneur | Fichier non sauvegardé, ou image non reconstruite | `grep` dans le fichier source, puis `docker compose exec app grep -c "<texte>" dist/src/<fichier>.js` | Sauvegarder, puis `docker compose up -d --build app` |
 | `npx` propose d'installer un paquet | Mauvais dossier courant | `pwd` | Répondre `n`, se placer dans `app/`, utiliser les scripts `npm run ...` |

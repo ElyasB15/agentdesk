@@ -81,6 +81,97 @@ const KNOWN_MODELS = (process.env.KNOWN_MODELS ?? DEFAULT_MODEL)
 
 initModelSeries(KNOWN_MODELS);
 
+// Ligne agrégée par modèle ; les `::int` évitent des BigInt, non sérialisables en JSON.
+type StatsRow = {
+  model: string;
+  classifications: number;
+  tool_call_valid: number;
+  latency_median_ms: number | null;
+};
+
+type ModelStats = {
+  model: string;
+  known: boolean;
+  classifications: number;
+  toolCallValid: number;
+  toolCallValidRate: number | null;
+  latencyMedianMs: number | null;
+};
+
+// `type: ["number", "null"]` est indispensable : sinon fast-json-stringify convertit null en 0.
+const modelStatsSchema = {
+  type: "object",
+  properties: {
+    model: { type: "string" },
+    known: { type: "boolean" },
+    classifications: { type: "integer" },
+    toolCallValid: { type: "integer" },
+    toolCallValidRate: { type: ["number", "null"] },
+    latencyMedianMs: { type: ["integer", "null"] },
+  },
+} as const;
+
+app.get(
+  "/stats",
+  {
+    schema: {
+      response: {
+        200: {
+          type: "object",
+          properties: { models: { type: "array", items: modelStatsSchema } },
+        },
+        503: { type: "object", properties: { error: { type: "string" } } },
+      },
+    },
+  },
+  async (_request, reply) => {
+    let rows: StatsRow[];
+    try {
+      rows = await prisma.$queryRaw<StatsRow[]>`
+        SELECT
+          model,
+          count(*)::int AS classifications,
+          (count(*) FILTER (WHERE tool_call_valid))::int AS tool_call_valid,
+          percentile_cont(0.5) WITHIN GROUP (ORDER BY latency_ms) AS latency_median_ms
+        FROM classification_runs
+        GROUP BY model`;
+    } catch (err) {
+      app.log.error({ err }, "stats : base de données injoignable");
+      return reply.code(503).send({ error: "Base de données injoignable" });
+    }
+
+    const byModel = new Map(rows.map((row) => [row.model, row]));
+    const toStats = (model: string, known: boolean): ModelStats => {
+      const row = byModel.get(model);
+      const classifications = row?.classifications ?? 0;
+      const toolCallValid = row?.tool_call_valid ?? 0;
+      const median = row?.latency_median_ms ?? null;
+      return {
+        model,
+        known,
+        classifications,
+        toolCallValid,
+        toolCallValidRate:
+          classifications > 0 ? Math.round((toolCallValid / classifications) * 10000) / 10000 : null,
+        latencyMedianMs: median === null ? null : Math.round(Number(median)),
+      };
+    };
+
+    // Ordre : modèles connus (ordre de KNOWN_MODELS), puis modèles hors liste par ordre alphabétique.
+    const unknownModels = rows
+      .map((row) => row.model)
+      .filter((model) => !KNOWN_MODELS.includes(model))
+      .sort((a, b) => a.localeCompare(b));
+
+    return {
+      models: [
+        ...KNOWN_MODELS.map((model) => toStats(model, true)),
+        ...unknownModels.map((model) => toStats(model, false)),
+      ],
+    };
+  },
+);
+
 type ClassifyParams = { id: string };
 type ClassifyBody = { model?: string };
 

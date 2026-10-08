@@ -116,10 +116,30 @@ Réponse :
 | `GET` | `/messages` | 50 derniers messages et leurs classifications |
 | `POST` | `/messages/:id/classify` | Classe un message existant avec le modèle choisi |
 | `DELETE` | `/messages/:id` | Supprime un message et ses classifications (204). **Irréversible** : les classifications, donc les données d'évaluation, sont supprimées avec lui |
+| `GET` | `/stats` | Statistiques par modèle (nombre de classifications, taux d'appels d'outils valides, latence médiane) sur tout l'historique |
 | `GET` | `/metrics` | Métriques au format Prometheus |
 
+Exemple de réponse de `/stats` (`toolCallValidRate` entre 0 et 1 ; `null` si aucun run ;
+`known: false` pour un modèle présent en base mais absent de `KNOWN_MODELS`) :
+
+```json
+{
+  "models": [
+    {
+      "model": "granite4.1:3b",
+      "known": true,
+      "classifications": 24,
+      "toolCallValid": 23,
+      "toolCallValidRate": 0.9583,
+      "latencyMedianMs": 7928
+    }
+  ]
+}
+```
+
 Codes d'erreur : **400** requête invalide ou modèle non autorisé, **404** message inexistant,
-**502** le service de modèles n'a pas répondu correctement.
+**502** le service de modèles n'a pas répondu correctement, **503** base de données injoignable
+(`/health`, `/stats`).
 
 ---
 
