@@ -48,7 +48,8 @@ Les rapports horodatés (`eval/results/*.md|json`) sont commités avec la config
 
 ## Architecture
 
-- `app/src/server.ts` : routes Fastify (`/health`, `/messages`, `/messages/:id/classify`, `/metrics`),
+- `app/src/server.ts` : routes Fastify (`/health`, `/messages`, `/messages/:id/classify`,
+  `DELETE /messages/:id`, `/metrics`),
   validation des entrées par schémas JSON Fastify, hook `onResponse` qui alimente l'histogramme HTTP
   (étiquette `route` = modèle de route, jamais l'URL brute).
 - `app/src/ollama.ts` : `SYSTEM_PROMPT`, définition de l'outil `classify_message` et validation Zod
