@@ -555,6 +555,27 @@ pas encore écoulé) → **Firing** (déclenchée). Le délai évite d'alerter p
 
 ---
 
+### 7.5 Accès des agents à la base (serveur MCP)
+
+Les agents de Claude Code lisent la base par le serveur MCP `agentdesk-db` (DBHub), défini dans
+`.mcp.json` et configuré dans `ops/mcp/dbhub.toml`. Trois couches de lecture seule :
+
+1. **DBHub** (`readonly = true`) : refuse les requêtes d'écriture d'après leur texte. Contournable
+   par une écriture déguisée : ce n'est pas la protection principale.
+2. **L'utilisateur PostgreSQL `agentdesk_lecture`** (`ops/db/lecture-seule.sql`) : droit `SELECT`
+   sur `messages` et `classification_runs` uniquement, transactions en lecture seule, requêtes
+   limitées à 5 s. **C'est la vraie barrière** : la base refuse toute écriture.
+3. **L'approbation humaine** de chaque appel à l'outil (mode manuel).
+
+Mise en place : appliquer `ops/db/lecture-seule.sql`, définir le mot de passe avec
+`\password agentdesk_lecture` dans `psql`, et l'exporter dans `AGENTDESK_LECTURE_PASSWORD`.
+Toute nouvelle table lisible par les agents doit être accordée explicitement (`GRANT SELECT`).
+Le rôle est perdu si le volume de la base est supprimé.
+
+Seuls les agents **reviseur** et **testeur** ont accès à cet outil.
+
+---
+
 ## 8. Dépannage
 
 | Symptôme | Cause probable | Vérification | Action |

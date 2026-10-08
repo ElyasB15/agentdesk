@@ -92,6 +92,8 @@ Couplages non évidents à respecter :
   `package-lock.json` : relancer `npm install` plutôt que résoudre à la main.
 - Jamais `npm audit fix --force` ; trier les vulnérabilités et consigner les décisions dans `SECURITY.md`.
 - Tout incident réel se consigne dans `INCIDENTS.md` (symptôme, cause, correctif, vérification).
+- La base se consulte par l'outil MCP `agentdesk-db` (lecture seule). Ne jamais tenter de
+  contourner la lecture seule.
 
 ## Règles critiques (non négociables)
 

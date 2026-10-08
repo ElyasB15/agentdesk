@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "agentdesk-db": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@bytebase/dbhub@1.4.0",
+        "--transport",
+        "stdio",
+        "--config",
+        "${CLAUDE_PROJECT_DIR:-.}/ops/mcp/dbhub.toml"
+      ]
+    }
+  }
+}

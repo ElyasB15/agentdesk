@@ -1,7 +1,7 @@
 ---
 name: reviseur
 description: Revue indépendante d'un diff avant commit (périmètre, sécurité, conventions, suppositions). À utiliser après chaque implémentation, jamais par l'agent qui a écrit le code.
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash, mcp__agentdesk-db
 model: inherit
 maxTurns: 20
 ---
