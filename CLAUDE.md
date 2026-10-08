@@ -94,7 +94,7 @@ Couplages non évidents à respecter :
 - Tout incident réel se consigne dans `INCIDENTS.md` (symptôme, cause, correctif, vérification).
 - La base se consulte par l'outil MCP `agentdesk-db` (lecture seule). Ne jamais tenter de
   contourner la lecture seule.
-  
+
 ## Règles critiques (non négociables)
 
 - **Ne jamais modifier une migration déjà commitée** dans `app/prisma/migrations/` : corriger

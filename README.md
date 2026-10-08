@@ -76,6 +76,10 @@ curl -s localhost:3000/health     # {"status":"ok","database":"ok"}
 Les modèles utilisables sont listés dans `KNOWN_MODELS` (service `app` du compose) ; un modèle doit
 y figurer **et** avoir été téléchargé.
 
+L'accès des agents Claude Code à la base passe par le serveur MCP `agentdesk-db` (lecture seule) ;
+il requiert la variable `AGENTDESK_LECTURE_PASSWORD`, exportée dans le shell qui lance Claude Code
+(voir [RUNBOOK.md](RUNBOOK.md#75-accès-des-agents-à-la-base-serveur-mcp)).
+
 ### Exemple d'utilisation
 
 ```bash
@@ -229,7 +233,10 @@ agentdesk/
 ├── ops/
 │   ├── prometheus/             # configuration et règles d'alerte
 │   ├── grafana/                # provisionnement et tableau de bord
+│   ├── db/                     # rôle PostgreSQL en lecture seule pour les agents
+│   ├── mcp/                    # configuration du serveur MCP DBHub
 │   └── samples/                # requêtes d'exemple pour tester Ollama directement
+├── .mcp.json                   # serveur MCP agentdesk-db (lecture seule)
 ├── docker-compose.yml          # la pile complète
 ├── .env.example                # variables de la pile (Compose)
 ├── RUNBOOK.md                  # procédures d'exploitation
