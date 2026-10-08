@@ -1,0 +1,15 @@
+# Accès en lecture seule à la base AgentDesk pour les agents.
+# Le mot de passe vient de la variable d'environnement AGENTDESK_LECTURE_PASSWORD.
+
+[[sources]]
+id = "agentdesk"
+description = "Base AgentDesk : messages clients et leurs classifications (lecture seule)"
+dsn = "postgres://agentdesk_lecture:${AGENTDESK_LECTURE_PASSWORD}@localhost:5433/agentdesk?sslmode=disable"
+connection_timeout = 10
+query_timeout = 5
+
+[[tools]]
+name = "execute_sql"
+source = "agentdesk"
+readonly = true
+max_rows = 200

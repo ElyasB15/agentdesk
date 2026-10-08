@@ -1,7 +1,7 @@
 ---
 name: testeur
 description: Prouve chaque critère d'acceptation par des commandes réelles et rapporte les résultats. À utiliser après la revue, avant la validation humaine.
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash, mcp__agentdesk-db
 model: haiku
 maxTurns: 25
 ---
